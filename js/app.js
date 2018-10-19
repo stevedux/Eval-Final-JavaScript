@@ -39,8 +39,8 @@ var Calculadora = {
   	},
 
   	limpiarPantalla: function(){
-		display.innerHTML = ""
-		Calculadora.punto = false
+  		display.innerHTML = ""
+  		Calculadora.punto = false
   	},
 
   	colocarPunto: function(){
@@ -58,32 +58,41 @@ var Calculadora = {
 
   	colocarDigitos: function(tecla){
 
-		//SI EL DISPLAY ESTA EN 0 CERO, LO LIMPIO
-		if (display.innerHTML == "0" || Calculadora.resultadoMostrado){
-			display.innerHTML = ""
-			Calculadora.resultadoMostrado = false
-			Calculadora.ultOperacion = ""
-		}
+  		//SI EL DISPLAY ESTA EN 0 CERO, LO LIMPIO
+  		if (display.innerHTML == "0" || Calculadora.resultadoMostrado){
+  			display.innerHTML = ""
+  			Calculadora.resultadoMostrado = false
+  			//Calculadora.ultOperacion = ""
+  		}
 
-		if (display.innerHTML.length < 8){
-			display.innerHTML += tecla
-		}
+  		if (display.innerHTML.length < 8){
+  			display.innerHTML += tecla
+  		}
 		
   	},
 
 
   	mostrarResultado: function(){
 
-  		//PROCESO LA ULTIMA OPERACION
-  		Calculadora.efectuarOperacion(Calculadora.ultOperacion,2)
+      // CHEQUEO SI PRESIONA SEGUIDO
+      if (Calculadora.resultadoMostrado){
 
-		//MUESTRO LA MEMORIA
-		display.innerHTML = Calculadora.memoria
+        //REPITO LA ULTIMA OPERACION
+        Calculadora.efectuarOperacion(Calculadora.ultOperacion,Calculadora.ultValorProcesado)
 
-		Calculadora.memoria = 0
-		Calculadora.punto = false
-		//Calculadora.ultOperacion = ""
-		Calculadora.resultadoMostrado = true
+      }else {
+
+        //PROCESO LA ULTIMA OPERACION
+        Calculadora.efectuarOperacion(Calculadora.ultOperacion)
+      }  		
+
+  		//MUESTRO LA MEMORIA
+  		display.innerHTML = Calculadora.memoria
+
+  		Calculadora.memoria = 0
+  		Calculadora.punto = false
+  		//Calculadora.ultOperacion = ""
+  		Calculadora.resultadoMostrado = true
 
   	},
 
@@ -97,33 +106,44 @@ var Calculadora = {
   		}
 
   		
+      if (Calculadora.resultadoMostrado){
 
-		//CHEQUEO SI HAY UNA OPERACION EN CURSO
-		if (Calculadora.ultOperacion == ""){
-			
-			//TOMO EL VALOR
-			Calculadora.memoria = ultValor
-			Calculadora.ultOperacion = tecla
+        Calculadora.memoria =  parseFloat(display.innerHTML)
+      }
 
-		}else if (operacion == "mas"){
 
-			Calculadora.memoria += ultValor
 
-		}else if (operacion == "menos"){
+  		//CHEQUEO SI HAY UNA OPERACION EN CURSO
+  		if (Calculadora.ultOperacion == "" ){
 
-			Calculadora.memoria -= ultValor
+  		
+  			//TOMO EL VALOR
+        Calculadora.ultOperacion = tecla
+  			Calculadora.memoria = ultValor
+        Calculadora.resultadoMostrado = false
 
-		}else if (operacion == "por"){
 
-			Calculadora.memoria *= ultValor
+  		}else if (operacion == "mas"){
 
-		}else if (operacion == "dividido"){
+  			Calculadora.memoria += ultValor
 
-			Calculadora.memoria = Calculadora.memoria / ultValor
+  		}else if (operacion == "menos"){
 
-		}
+  			Calculadora.memoria -= ultValor
 
-		Calculadora.limpiarPantalla()  	
+  		}else if (operacion == "por"){
+
+  			Calculadora.memoria *= ultValor
+
+  		}else if (operacion == "dividido"){
+
+  			Calculadora.memoria = Calculadora.memoria / ultValor
+
+  		}
+
+      Calculadora.ultOperacion = operacion
+      Calculadora.ultValorProcesado = ultValor
+  		Calculadora.limpiarPantalla()  	
   	},
 
 
@@ -145,7 +165,8 @@ var Calculadora = {
 
   		}else if (tecla == "mas" || tecla == "menos" || tecla == "por" || tecla == "dividido"){
 
-			Calculadora.efectuarOperacion(tecla);		
+        Calculadora.resultadoMostrado = false
+			 Calculadora.efectuarOperacion(tecla);		
 
   		}else if (tecla == "igual"){
 
