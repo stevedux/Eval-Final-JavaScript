@@ -43,6 +43,21 @@ var Calculadora = {
   		Calculadora.punto = false
   	},
 
+    cambiarSigno: function(){
+
+      valorTem = parseFloat(display.innerHTML)
+
+      if (valorTem < 0){
+
+        display.innerHTML = Math.abs(valorTem);
+
+      }else if (valorTem > 0){
+
+        display.innerHTML = "-" + valorTem
+
+      }
+    },
+
   	colocarPunto: function(){
   		if (!Calculadora.punto){
 
@@ -59,15 +74,17 @@ var Calculadora = {
   	colocarDigitos: function(tecla){
 
   		//SI EL DISPLAY ESTA EN 0 CERO, LO LIMPIO
-  		if (display.innerHTML == "0" || Calculadora.resultadoMostrado){
+  		if (display.innerHTML == "0" ){
   			display.innerHTML = ""
-  			Calculadora.resultadoMostrado = false
-  			//Calculadora.ultOperacion = ""
+
   		}
 
   		if (display.innerHTML.length < 8){
   			display.innerHTML += tecla
   		}
+
+
+      Calculadora.resultadoMostrado = false
 		
   	},
 
@@ -86,12 +103,18 @@ var Calculadora = {
         Calculadora.efectuarOperacion(Calculadora.ultOperacion)
       }  		
 
-  		//MUESTRO LA MEMORIA
-  		display.innerHTML = Calculadora.memoria
 
-  		Calculadora.memoria = 0
+      //CHEQUEO SI TIENE MAS DE 8 CARACTERES
+      valorTemp2 = parseFloat(Calculadora.memoria.toFixed(2)).toString();
+
+      if (valorTemp2.length > 8){
+         valorTemp2 = valorTemp2.substring(0,8)
+      }
+
+
+  		//MUESTRO LA MEMORIA
+  		display.innerHTML = valorTemp2
   		Calculadora.punto = false
-  		//Calculadora.ultOperacion = ""
   		Calculadora.resultadoMostrado = true
 
   	},
@@ -105,25 +128,12 @@ var Calculadora = {
   			ultValor = parseFloat(display.innerHTML)
   		}
 
-  		
-      if (Calculadora.resultadoMostrado){
 
-        Calculadora.memoria =  parseFloat(display.innerHTML)
-      }
+  	  if (Calculadora.memoria == 0 ){
 
+        Calculadora.memoria = ultValor
 
-
-  		//CHEQUEO SI HAY UNA OPERACION EN CURSO
-  		if (Calculadora.ultOperacion == "" ){
-
-  		
-  			//TOMO EL VALOR
-        Calculadora.ultOperacion = tecla
-  			Calculadora.memoria = ultValor
-        Calculadora.resultadoMostrado = false
-
-
-  		}else if (operacion == "mas"){
+      }else if (operacion == "mas"){
 
   			Calculadora.memoria += ultValor
 
@@ -165,14 +175,19 @@ var Calculadora = {
 
   		}else if (tecla == "mas" || tecla == "menos" || tecla == "por" || tecla == "dividido"){
 
-        Calculadora.resultadoMostrado = false
+       Calculadora.resultadoMostrado = false
+       Calculadora.memoria = 0
 			 Calculadora.efectuarOperacion(tecla);		
 
   		}else if (tecla == "igual"){
 
   			Calculadora.mostrarResultado();
 
-  		}
+  		}else if (tecla == "sign"){
+
+        Calculadora.cambiarSigno();
+
+      }
 
   		console.log(tecla)
   		
